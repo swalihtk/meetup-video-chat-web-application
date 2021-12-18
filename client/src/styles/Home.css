@@ -1,0 +1,67 @@
+.home_leftside{
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home__btns{
+    display: flex;
+    color: #202124;
+    align-items: center;
+    gap:10px;
+}
+
+.join__div{
+    display: flex;
+}
+
+.join_input{
+    border:1px solid #dadce0;
+    padding:3px 5px;
+}
+
+.join_input input{
+    border: none;
+}
+.join_input input:focus{
+    outline: none;
+}
+
+
+
+.home__rightside img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.home__googleLogin{
+    display: flex;
+    justify-content: center;
+}
+
+.home__googleLogin button{
+    padding:5px 50px !important;
+}
+
+@media screen and (max-width:800px){
+    .home__btns{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .home__btns span{
+        visibility: hidden;
+    }
+}
+
+@media screen and (max-width:1200px){
+    .home__btns{
+        flex-direction: column;
+        align-items: center;
+    }
+    .home__btns span{
+        visibility: hidden;
+    }
+}

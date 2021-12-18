@@ -1,0 +1,19 @@
+{
+  "name": "video-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "shortid": "^2.2.16",
+    "socket.io": "^4.4.0",
+    "socketio": "^1.0.0"
+  }
+}
