@@ -7,36 +7,88 @@ import MicNoneIcon from '@material-ui/icons/MicNone';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import CallEndIcon from '@material-ui/icons/CallEnd';
 import ChatIcon from '@material-ui/icons/Chat';
-import peerjs from 'peerjs';
-import socketioClient from 'socket.io-client';
+import Peer from 'peerjs';
+import socketIoClient from 'socket.io-client';
+import {useParams} from 'react-router-dom';
 
 function Meeting() {
 
     // own video
     let videoGrid=useRef();
     let [myVideoStream, setMyVideoStream]=useState(undefined);
-    let myVideo=document.createElement("video");
     let [videoOn, setVideoOn]=useState(false);
     let [muteOn, setMuteOn]=useState(false);
 
+    // roomId
+    let {id:roomId}=useParams();
+    
+
+    // peer and socketio setup 
+    let peer=new Peer();
+    let socketIo=socketIoClient("http://localhost:4000");
+  
+    useEffect(async()=>{
+        peer.on("open", (id)=>{
+            socketIo.emit("create-room", id, roomId);
+        })
+    }, [])
+
     // setup camera
     useEffect(async()=>{
+        let myVideo=document.createElement("video");
         let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
         appendOwnVideoToDiv(myVideo, myStream);
         setMyVideoStream(myStream);
         setVideoOn(true);
-        setMuteOn(true);
 
+
+        // answering to call
+        answerToCall(myStream);
+        
+        // calling and socket connnection
+        socketIo.on("join-user", (userId)=>{
+            callToUser(userId, myStream);
+        })
+        
+    }, [])
+    
+    // checking videos length
+    function setVideoResponsive(){
         let videosLength=document.getElementsByClassName("video").length;
         if(videosLength>1){
             document.getElementById("myVideo").classList+=" minimizeVideo";
         }
-    }, [])
+    }
 
-    useEffect(async()=>{
+    // calling to user
+    function callToUser(userId, mediaStream){
+        // if(!mediaStream) return;
+        const call = peer.call(userId,mediaStream);
 
-    }, [])
+        call.on("stream", stream=>{
+            let video=document.createElement("video");
+            appendOthersVideoToDiv(video,stream)
 
+            setVideoResponsive();
+        })
+    }
+
+    // answering to call
+    function answerToCall(mediaStream){
+        peer.on('call', function(call) {
+            // Answer the call, providing our mediaStream
+            call.answer(mediaStream);
+
+            call.on('stream', function(stream) {
+                // `stream` is the MediaStream of the remote peer.
+                // Here you'd add it to an HTML video/canvas element.
+                let video=document.createElement("video");
+                appendOthersVideoToDiv(video, stream);
+
+                setVideoResponsive();
+              });
+          });
+    }
 
     // function for video appending (own video)
     function appendOwnVideoToDiv(video, stream){
@@ -54,6 +106,20 @@ function Meeting() {
         videoGrid.current.appendChild(div);
     }
 
+    // function for video appending (roomates video)
+    function appendOthersVideoToDiv(video, stream){
+        // video element setup
+        video.srcObject=stream;
+        video.addEventListener("loadedmetadata", ()=>video.play());
+
+         // div creation and setup
+         let div=document.createElement("div");
+         div.setAttribute("class", "video");
+         div.appendChild(video);
+ 
+         // div appending to parent
+         videoGrid.current.appendChild(div);
+    }
 
     // handle video mute and audio mute
     function handleVideoMute(){
