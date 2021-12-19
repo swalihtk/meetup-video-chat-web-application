@@ -44,6 +44,17 @@ io.on("connection", (socket)=>{
         socket.join(roomId);
 
         socket.broadcast.to(roomId).emit("join-user", peerId);
+
+    })
+
+    socket.on("user-chat", (roomId,userName, chat)=>{
+        socket.join(roomId);
+        socket.broadcast.to(roomId).emit("recive-chat", userName, chat);
+    })
+
+    socket.on("call-end", (peerId, roomId)=>{
+        socket.join(roomId);
+        socket.broadcast.to(roomId).emit("user-disconnected", peerId);
     })
 })
 

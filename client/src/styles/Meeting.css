@@ -87,3 +87,40 @@
     }
 }
 
+
+/* chat form */
+.chat__main{
+    height: 60vh;
+}
+
+.chat__body{
+    height: 90%;
+    overflow-y: auto;
+}
+
+.chat__input{
+    border: 1px solid #202124;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding:2px 10px;
+}
+
+.chat__input form{
+    display: flex;
+}
+
+.chat__input form input{
+    flex:1;
+    border:none;    
+}
+
+.chat__input form input:focus{
+    outline: none;
+}
+
+.chat__input form button{
+    border: none;
+    background:none;
+}

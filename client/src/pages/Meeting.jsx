@@ -13,6 +13,7 @@ import {useParams} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import checkUserLogedIn from "../actions/checkLogin";
 import LoginPopup from '../components/LoginPopup';
+import RoomChat from '../components/RoomChat';
 
 function Meeting() {   
 
@@ -31,6 +32,11 @@ function Meeting() {
     let [myVideoStream, setMyVideoStream]=useState(undefined);
     let [videoOn, setVideoOn]=useState(false);
     let [muteOn, setMuteOn]=useState(false);
+    let [callState, setCallState]=useState(undefined);
+    let [myPeerId, setMyPeerId]=useState("");
+    let myVideo=document.createElement("video");
+    let myDiv=document.createElement("div");
+    
 
     // roomId
     let {id:roomId}=useParams();
@@ -43,6 +49,10 @@ function Meeting() {
     useEffect(async()=>{
         if(!logedin) return;
         peer.on("open", (id)=>{
+            setMyPeerId(id);
+
+            // adding id to div for remove when user disconnected
+            myDiv.classList+=" "+id;
             socketIo.emit("create-room", id, roomId);
         })
     }, [logedin])
@@ -51,7 +61,6 @@ function Meeting() {
     useEffect(async()=>{
         if(!logedin) return;
         setCamLoading(true);
-        let myVideo=document.createElement("video");
         let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
         appendOwnVideoToDiv(myVideo, myStream);
         setMyVideoStream(myStream);
@@ -68,13 +77,19 @@ function Meeting() {
 
     }, [logedin])
     
-
     useEffect(()=>{
         return ()=>{
             myVideoStream.getVideoTracks()[0].stop();
             myVideoStream.getAudioTracks()[0].stop();
         }
     }, [])
+
+    // remove uservideo when disconnected
+    useEffect(()=>{
+        socketIo.on("user-disconnected", (userId)=>{
+            window.location.reload();
+        })
+    }, [socketIo])
 
     // checking videos length
     function setVideoResponsive(){
@@ -92,9 +107,9 @@ function Meeting() {
         call.on("stream", stream=>{
             let video=document.createElement("video");
             appendOthersVideoToDiv(video,stream)
-
             setVideoResponsive();
         })
+        setCallState(call);
     }
 
     // answering to call
@@ -119,15 +134,14 @@ function Meeting() {
         // video element setup
         video.srcObject=stream;
         video.addEventListener("loadedmetadata", ()=>video.play());
-        
+
         // div creation and setup
-        let div=document.createElement("div");
-        div.setAttribute("class", "video");
-        div.setAttribute("id", "myVideo")
-        div.appendChild(video);
+        myDiv.setAttribute("class", "video");
+        myDiv.setAttribute("id", "myVideo")
+        myDiv.appendChild(video);
 
         // div appending to parent
-        videoGrid.current.appendChild(div);
+        videoGrid.current.appendChild(myDiv);
     }
 
     // function for video appending (roomates video)
@@ -164,6 +178,18 @@ function Meeting() {
             setMuteOn(false);
         }
     }
+    function handleCallClose(){
+        if(!callState) return;
+        callState.close();
+        socketIo.emit("call-end", myPeerId, roomId);
+        window.location.assign("/");
+    }
+
+    // ******* chat manage ******
+    let [showChatForm, setShowChatForm]=useState(false);
+    
+    // ************* test ******
+ 
 
     // ********** rendering ***********
     if(loading){
@@ -186,6 +212,8 @@ function Meeting() {
     }
 
     return (
+        <>
+        <RoomChat showChatForm={showChatForm} setShowChatForm={setShowChatForm} socketio={socketIo} username={userInfo.firstName} roomId={roomId}/>
         <div className="meet__main">
             <Container>
                 <div className="row">
@@ -217,15 +245,16 @@ function Meeting() {
                                 <MicNoneIcon onClick={handleAudioMute} style={{cursor:"pointer"}}/>
                             }
                             
-                            <CallEndIcon style={{color:"red"}}/>
+                            <CallEndIcon style={{color:"red", cursor:"pointer"}} onClick={handleCallClose}/>
                         </div>
                         <div className='meet__chat'>
-                            <ChatIcon />
+                            <ChatIcon style={{cursor:"pointer"}} onClick={()=>setShowChatForm(true)}/>
                         </div>
                     </div>
                 </div>
             </Container>
         </div>
+        </>
     )
 }
 
