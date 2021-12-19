@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import FeedbackOutlinedIcon from '@material-ui/icons/FeedbackOutlined';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import camIcon from "../styles/cam_icon.png";
+import camIcon from "../styles/cameIcon.jpeg";
 
 function NavigationBar() {
 
