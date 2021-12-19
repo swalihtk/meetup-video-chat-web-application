@@ -6,11 +6,11 @@ import swal from 'sweetalert';
 
 function GoogleAuthentication(props) {
 
-    let {btnText, styleColor}=props;
+    let {btnText, styleColor, style}=props;
 
     async function responseGoogle(res){
+        console.log(res);
         if(!res.profileObj){
-            swal("something went wrong!!", "ok", "error");
             return;
         }
         let data=res.profileObj;
@@ -25,12 +25,11 @@ function GoogleAuthentication(props) {
             let response=await axios.post("/auth/login", body);
             let result=response.data;
             if(result.error){
-                swal("something went wrong!!", "ok", "error");
+                return;
             }else{
                 window.location.reload();
             }
         }catch(e){
-            swal("something went wrong!!", "ok", "error");
             return;
         }
     }
@@ -46,7 +45,7 @@ function GoogleAuthentication(props) {
         <GoogleLogin
             clientId="996666068144-dnpe7vti8mlruvc4mtiqflkvjq5vrhnq.apps.googleusercontent.com"
             render={renderProps => (
-            <Button onClick={renderProps.onClick} disabled={renderProps.disabled} variant={styleColor} style={{fontWeight:"600"}}>{btnText}</Button>
+            <Button onClick={renderProps.onClick} disabled={renderProps.disabled} variant={styleColor} style={style}>{btnText}</Button>
             )}
             buttonText="Login"
             onSuccess={responseGoogle}
