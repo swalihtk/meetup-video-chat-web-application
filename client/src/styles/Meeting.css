@@ -5,10 +5,39 @@
 
 .meet__video{
     height: 80vh;
-    display: grid;
+    /* display: grid;
     place-items: center;
-    grid-template-columns: auto;
+    grid-template-columns: auto; */
+    display: flex;
+    overflow-x: auto;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    transition: all 1s;
 }
+
+.meet__video::-webkit-scrollbar{
+    display: none;
+}
+
+.video{
+    padding:5px;
+}
+
+.minimizeVideo{
+    position: fixed;
+    right: 15vw;
+    bottom: 10vh;
+    height: 200px;
+    width: 200px;
+}
+
+.video video{
+    border: 1px solid black;
+    height: auto;
+    width: 100%;
+}
+
 
 .meet__video img{
     width: 100%;
@@ -35,3 +64,24 @@
 .meet__chat svg{
     font-size: 30px;
 }
+
+@media screen and (max-width:1000px) {
+    .minimizeVideo{
+        position: fixed;
+        right: 5vw;
+        bottom: 20vh;
+        height: 200px;
+        width: 200px;
+    }
+}
+
+@media screen and (max-width:800px){
+    .minimizeVideo{
+        position: fixed;
+        right: 5vw;
+        bottom: 20vh;
+        height: 100px;
+        width: 100px;
+    }
+}
+
