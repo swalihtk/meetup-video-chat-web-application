@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router';
 function Home() {
 
     // checking user logedin or not
-    let {loading, userInfo, error, logedin}=useSelector(state=>state.logedIn);
+    let {loading, userInfo, logedin}=useSelector(state=>state.logedIn);
     let dispatch=useDispatch();
 
     useEffect(()=>{
@@ -25,15 +25,9 @@ function Home() {
     let [joinId, setJoinId]=useState("");
 
     function handleCreateRoom(){
-        if(!logedin){
-            return;
-        }
         roomAction.createMeeting(navigate);
     }
     function handleJoinRoom(){
-        if(!logedin){
-            return;
-        }
         if(joinId.length<9){
             return;
         }

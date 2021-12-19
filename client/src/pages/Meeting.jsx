@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react'
 import "../styles/Meeting.css";
-import {Container} from "react-bootstrap";
+import {Container, Spinner} from "react-bootstrap";
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import MicNoneIcon from '@material-ui/icons/MicNone';
@@ -10,10 +10,23 @@ import ChatIcon from '@material-ui/icons/Chat';
 import Peer from 'peerjs';
 import socketIoClient from 'socket.io-client';
 import {useParams} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
+import checkUserLogedIn from "../actions/checkLogin";
+import LoginPopup from '../components/LoginPopup';
 
-function Meeting() {
+function Meeting() {   
 
-    // own video
+
+    // ******************* Login Check *********
+    let {loading, userInfo, error, logedin}=useSelector(state=>state.logedIn);
+    let [camLoading, setCamLoading]=useState(false);
+    let dispatch=useDispatch();
+
+    useEffect(()=>{
+        dispatch(checkUserLogedIn());
+    }, [])
+
+    // ************** Video CAll Setup *********
     let videoGrid=useRef();
     let [myVideoStream, setMyVideoStream]=useState(undefined);
     let [videoOn, setVideoOn]=useState(false);
@@ -28,19 +41,22 @@ function Meeting() {
     let socketIo=socketIoClient("http://localhost:4000");
   
     useEffect(async()=>{
+        if(!logedin) return;
         peer.on("open", (id)=>{
             socketIo.emit("create-room", id, roomId);
         })
-    }, [])
+    }, [logedin])
 
     // setup camera
     useEffect(async()=>{
+        if(!logedin) return;
+        setCamLoading(true);
         let myVideo=document.createElement("video");
         let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
         appendOwnVideoToDiv(myVideo, myStream);
         setMyVideoStream(myStream);
         setVideoOn(true);
-
+        setCamLoading(false);
 
         // answering to call
         answerToCall(myStream);
@@ -48,10 +64,18 @@ function Meeting() {
         // calling and socket connnection
         socketIo.on("join-user", (userId)=>{
             callToUser(userId, myStream);
-        })
-        
-    }, [])
+        }) 
+
+    }, [logedin])
     
+
+    useEffect(()=>{
+        return ()=>{
+            myVideoStream.getVideoTracks()[0].stop();
+            myVideoStream.getAudioTracks()[0].stop();
+        }
+    }, [])
+
     // checking videos length
     function setVideoResponsive(){
         let videosLength=document.getElementsByClassName("video").length;
@@ -141,6 +165,25 @@ function Meeting() {
         }
     }
 
+    // ********** rendering ***********
+    if(loading){
+        return (
+            <div className='page__loading'>
+                <div>
+                <Spinner animation="border" variant="info"/>
+                <p>loading..</p>
+                </div>
+            </div>
+        )
+    }
+
+    if(!logedin){
+        return (
+            <div className='meet__main'>
+                <LoginPopup />
+            </div>
+        )
+    }
 
     return (
         <div className="meet__main">
@@ -148,10 +191,17 @@ function Meeting() {
                 <div className="row">
                     <div className="col-12 meet__video" ref={videoGrid}>
                         {/* Videos appends here */}
+                        {
+                            camLoading&&(
+                                <div>
+                                    <Spinner animation='border' variant='danger' />
+                                </div>
+                            )
+                        }
                     </div>
                     <div className="col-12 meet__footer">
                         <div className="meet__details">
-                            <p>Swalih | klsldklsdk</p>
+                            <p>{userInfo.firstName}  |  {roomId}</p>
                         </div>
                         <div className='meet__options'>
                             {

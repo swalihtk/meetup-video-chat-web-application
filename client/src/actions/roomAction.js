@@ -10,7 +10,8 @@ const helpers={
                 return;
             }
 
-            navigate(`/room/${responseData.videoId}`);
+            window.location.assign(`/room/${responseData.videoId}`);
+            // navigate(`/room/${responseData.videoId}`);
         }catch(e){
             return;
         }
@@ -18,7 +19,8 @@ const helpers={
 
     joinMeeting:async function(navigate, joinId){
         try{
-            navigate(`/room/${joinId}`);
+            // navigate(`/room/${joinId}`);
+            window.location.assign(`/room/${joinId}`);
         }catch(e){
             return;
         }
