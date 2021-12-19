@@ -10,7 +10,7 @@
 - React-Google-Login npm module used for google authentication.
 - Socket.io used for realtime chat in video room.
 
-## preview website ---------------
+## Not yet diployed -------
 
 ## reference
 - https://www.npmjs.com/package/react-google-login
