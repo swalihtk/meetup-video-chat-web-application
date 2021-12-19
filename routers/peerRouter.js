@@ -1,7 +1,7 @@
 const router=require("express").Router();
 const shortId=require("shortid");
 
-router.get("/join", (req,res)=>{ 
+router.get("/roomId", (req,res)=>{ 
     let videoId=shortId.generate();
     res.json({videoId});
 })

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavigationBar from '../layouts/NavigationBar';
 import {Button, Container, Spinner} from 'react-bootstrap';
 import VideocamIcon from '@material-ui/icons/Videocam';
@@ -7,6 +7,8 @@ import "../styles/Home.css";
 import GoogleAuthentication from '../components/GoogleAuthentication';
 import { useDispatch, useSelector } from 'react-redux';
 import checkUserLogedIn from "../actions/checkLogin";
+import roomAction from "../actions/roomAction";
+import { useNavigate } from 'react-router';
 
 function Home() {
 
@@ -18,6 +20,28 @@ function Home() {
         dispatch(checkUserLogedIn());
     }, [])
 
+    // join, create action
+    let navigate=useNavigate();
+    let [joinId, setJoinId]=useState("");
+
+    function handleCreateRoom(){
+        if(!logedin){
+            return;
+        }
+        roomAction.createMeeting(navigate);
+    }
+    function handleJoinRoom(){
+        if(!logedin){
+            return;
+        }
+        if(joinId.length<9){
+            return;
+        }
+
+        roomAction.joinMeeting(navigate, joinId);
+    }
+
+    // ************** RENDER PAGE *********
     if(loading){
         return (
             <div className='page__loading'>
@@ -43,15 +67,15 @@ function Home() {
                         </div> */}
                         <div className='home__btns'>
                             <div>
-                            <Button><VideocamIcon/> Start Meeting</Button>
+                            <Button onClick={handleCreateRoom}><VideocamIcon/> Start Meeting</Button>
                             </div>
                             <span style={{fontWeight:"500"}}>or</span>
                             <div className='join__div'>
                             <div className='join_input'>
                                 <PowerInputIcon/>
-                                <input type="text" placeholder='Meeting Code'/>
+                                <input type="text" placeholder='Meeting Code' value={joinId} onChange={e=>setJoinId(e.target.value)}/>
                             </div>
-                            <Button variant='light' style={{fontWeight:"500"}}>Join</Button>
+                            <Button onClick={handleJoinRoom} variant='light' style={{fontWeight:"500"}}>Join</Button>
                             </div>
                         </div>
                     </div>

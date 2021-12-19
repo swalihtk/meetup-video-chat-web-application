@@ -11,7 +11,7 @@ import camIcon from "../styles/cam_icon.png";
 
 function NavigationBar() {
 
-    let {logedin}=useSelector(state=>state.logedIn);
+    let {logedin, userInfo}=useSelector(state=>state.logedIn);
 
     let [currentDate, setCurrentDate]=useState("");
 
@@ -23,6 +23,7 @@ function NavigationBar() {
         let dateFormate=hour+":"+minute+" "+splitDate[0]+", "+splitDate[2]+" "+splitDate[1];
         setCurrentDate(dateFormate);
     }, [])
+
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
@@ -55,7 +56,7 @@ function NavigationBar() {
                     <SettingsOutlinedIcon />
                 </Button>
                 <div className='userImg'>
-                    <img src="https://cdn.logo.com/hotlink-ok/logo-social.png" alt="" />
+                    <img src={userInfo.profileImage} alt="" />
                 </div>
                 </>
                 )
