@@ -1,12 +1,30 @@
 import React from 'react'
 import GoogleLogin from 'react-google-login';
-import {Button} from 'react-bootstrap';
+import {Button, Spinner} from 'react-bootstrap';
 import axios from 'axios';
 import swal from 'sweetalert';
 
 function GoogleAuthentication(props) {
 
     let {btnText, styleColor, style}=props;
+    let [googleAuthSecret, setGoogleAuthSecret]=React.useState("");
+    let [loading, setLoading]=React.useState(false);
+    
+
+    React.useEffect(async ()=>{
+        try{   
+            setLoading(true);
+            let response=await axios.get("/auth/googleAuthSecret");
+            let data=response.data;
+            setLoading(false);
+            if(data.key){
+                setGoogleAuthSecret(data.key);
+            }
+        }catch(e){
+            setLoading(false);
+            return;
+        }
+    }, [])
 
     async function responseGoogle(res){
         console.log(res);
@@ -34,16 +52,16 @@ function GoogleAuthentication(props) {
         }
     }
 
+    let demo=true;
+
     return (
-        // <GoogleLogin
-        // clientId="996666068144-dnpe7vti8mlruvc4mtiqflkvjq5vrhnq.apps.googleusercontent.com"
-        // buttonText="Login"
-        // onSuccess={responseGoogle}
-        // onFailure={responseGoogle}
-        // cookiePolicy={'single_host_origin'}
-        // />
+        <>
+        {
+            loading?
+            <Spinner animation='border' variant="primary"/>
+            :
         <GoogleLogin
-            clientId="996666068144-dnpe7vti8mlruvc4mtiqflkvjq5vrhnq.apps.googleusercontent.com"
+            clientId={googleAuthSecret}
             render={renderProps => (
             <Button onClick={renderProps.onClick} disabled={renderProps.disabled} variant={styleColor} style={style}>{btnText}</Button>
             )}
@@ -52,6 +70,8 @@ function GoogleAuthentication(props) {
             onFailure={responseGoogle}
             cookiePolicy={'single_host_origin'}
         />
+        }
+        </>
     )
 }
 
