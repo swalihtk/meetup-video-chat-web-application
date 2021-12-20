@@ -48,7 +48,7 @@ function Meeting() {
 
     // peer and socketio setup 
     let peer=new Peer();
-    let socketIo=socketIoClient("http://localhost:4000");
+    let socketIo=socketIoClient("/api");
   
     useEffect(async()=>{
         if(!logedin) return;
