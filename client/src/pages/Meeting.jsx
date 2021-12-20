@@ -14,6 +14,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import checkUserLogedIn from "../actions/checkLogin";
 import LoginPopup from '../components/LoginPopup';
 import RoomChat from '../components/RoomChat';
+import swal from 'sweetalert';
 
 function Meeting() {   
 
@@ -36,7 +37,10 @@ function Meeting() {
     let [myPeerId, setMyPeerId]=useState("");
     let myVideo=document.createElement("video");
     let myDiv=document.createElement("div");
-    
+
+    // video call permission
+    let [permissionStatus, setPermissionStatus]=useState(undefined);
+      
 
     // roomId
     let {id:roomId}=useParams();
@@ -50,32 +54,42 @@ function Meeting() {
         if(!logedin) return;
         peer.on("open", (id)=>{
             setMyPeerId(id);
-
             // adding id to div for remove when user disconnected
-            myDiv.classList+=" "+id;
             socketIo.emit("create-room", id, roomId);
         })
     }, [logedin])
 
-    // setup camera
+    // setup camera permission
+    navigator.permissions.query({name: "camera"}).then(response=>{
+            response.addEventListener("change", ()=>{
+                setPermissionStatus(response.state)
+            })
+    })
+        
+
     useEffect(async()=>{
         if(!logedin) return;
-        setCamLoading(true);
-        let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
-        appendOwnVideoToDiv(myVideo, myStream);
-        setMyVideoStream(myStream);
-        setVideoOn(true);
-        setCamLoading(false);
-
-        // answering to call
-        answerToCall(myStream);
         
-        // calling and socket connnection
-        socketIo.on("join-user", (userId)=>{
-            callToUser(userId, myStream);
-        }) 
+            try{
+                setCamLoading(true);
+                let myStream=await window.navigator.mediaDevices.getUserMedia({audio:true, video:true});
+                appendOwnVideoToDiv(myVideo, myStream);
+                setMyVideoStream(myStream);
+                setVideoOn(true);
+                setCamLoading(false);
 
-    }, [logedin])
+                // answering to call
+                answerToCall(myStream);
+                
+                // calling and socket connnection
+                socketIo.on("join-user", (userId)=>{
+                    callToUser(userId, myStream);
+                }) 
+            }catch(e){
+                swal("Please on camera to access video call", "ok", "error");
+            }
+                
+    }, [logedin, permissionStatus])
     
     useEffect(()=>{
         return ()=>{
@@ -110,6 +124,7 @@ function Meeting() {
             setVideoResponsive();
         })
         setCallState(call);
+
     }
 
     // answering to call
