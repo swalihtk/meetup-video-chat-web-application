@@ -12,7 +12,7 @@ require("dotenv").config();
 const app=express();
 const PORT= process.env.PORT;
 const server=http.createServer(app);
-const io=socketio(server);
+const io=socketio(server, {origin:["https://meetup.swaliht.tech", "http://localhost:3000"]});
 
 // setup peerserver
 // const peerServer = ExpressPeerServer(server, {
