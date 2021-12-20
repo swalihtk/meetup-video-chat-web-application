@@ -23,7 +23,7 @@ const io=socketio(server, {origin:"*"});
 
 // middlewares
 app.use(cors({
-    origin:["http://localhost:3000", "https://meetup.swaliht.tech"],
+    origin:["http://localhost:3000"],
     credentials:true
 }));
 app.use(express.json({}));
