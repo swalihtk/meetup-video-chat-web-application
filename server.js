@@ -23,7 +23,7 @@ const io=socketio(server, {cors:{origin:"*"}});
 
 // middlewares
 app.use(cors({
-    origin:["http://localhost:3000"],
+    origin:["http://localhost:3000", "http://meetup.swaliht.tech"],
     credentials:true
 }));
 app.use(express.json({}));
@@ -48,8 +48,9 @@ mongoose.connect(process.env.MONGO_URL, (err)=>{
 
 // Socket io connection
 io.on("connection", (socket)=>{
-    console.log("connected");
+    console.log("User Connected");
     socket.on("create-room", (peerId, roomId)=>{
+        console.log("Room Joined");
         socket.join(roomId);
         socket.broadcast.to(roomId).emit("join-user", peerId);
 

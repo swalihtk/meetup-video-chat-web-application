@@ -48,7 +48,7 @@ function Meeting() {
 
     // peer and socketio setup 
     let peer=new Peer();
-    let socketIo=socketIoClient("http://localhost:4000");
+    let socketIo=socketIoClient("https://meetup.swaliht.tech/api/");
   
     useEffect(async()=>{
         if(!logedin) return;
@@ -56,6 +56,8 @@ function Meeting() {
             setMyPeerId(id);
             // adding id to div for remove when user disconnected
             socketIo.emit("create-room", id, roomId);
+
+            console.log("Peer Id Send");
         })
     }, [logedin])
 
@@ -84,6 +86,7 @@ function Meeting() {
                 // calling and socket connnection
                 socketIo.on("join-user", (userId)=>{
                     callToUser(userId, myStream);
+                    console.log("User Join");
                 }) 
             }catch(e){
                 swal("Please on camera to access video call", "ok", "error");
