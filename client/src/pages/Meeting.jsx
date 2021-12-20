@@ -9,6 +9,7 @@ import CallEndIcon from '@material-ui/icons/CallEnd';
 import ChatIcon from '@material-ui/icons/Chat';
 import Peer from 'peerjs';
 import socketIoClient from 'socket.io-client';
+
 import {useParams} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import checkUserLogedIn from "../actions/checkLogin";
@@ -48,7 +49,7 @@ function Meeting() {
 
     // peer and socketio setup 
     let peer=new Peer();
-    let socketIo=socketIoClient("https://meetup.swaliht.tech/api/");
+    let socketIo=socketIoClient(`http://localhost:4000`);
   
     useEffect(async()=>{
         if(!logedin) return;
