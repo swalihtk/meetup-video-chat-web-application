@@ -12,7 +12,7 @@
 
 ## Not yet diployed -------
 
-## dependency
+## dependencys used
 - https://www.npmjs.com/package/react-google-login
 - https://peerjs.com/
 - https://www.npmjs.com/package/socket.io-client
