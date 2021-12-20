@@ -18,6 +18,7 @@ function Home() {
 
     useEffect(()=>{
         dispatch(checkUserLogedIn());
+
     }, [])
 
     // join, create action
