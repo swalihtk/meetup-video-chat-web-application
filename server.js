@@ -48,6 +48,7 @@ mongoose.connect(process.env.MONGO_URL, (err)=>{
 
 // Socket io connection
 io.on("connection", (socket)=>{
+    console.log("connected");
     socket.on("create-room", (peerId, roomId)=>{
         socket.join(roomId);
         socket.broadcast.to(roomId).emit("join-user", peerId);
