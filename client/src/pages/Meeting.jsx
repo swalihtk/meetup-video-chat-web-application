@@ -50,6 +50,7 @@ function Meeting() {
     // peer and socketio setup 
     let peer=new Peer();
     let socketIo=socketIoClient(`http://localhost:4000`, { transports : ['websocket'] });
+    // let socketIo=socketIoClient();
   
     useEffect(async()=>{
         if(!logedin) return;

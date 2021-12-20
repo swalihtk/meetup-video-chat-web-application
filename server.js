@@ -4,7 +4,7 @@ const socketio=require("socket.io");
 const http=require("http");
 const mongoose=require("mongoose");
 const cookieParse=require("cookie-parser");
-const {ExpressPeerServer} =require("peer");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -14,13 +14,6 @@ const PORT= process.env.PORT;
 const server=http.createServer(app);
 const io=socketio(server, {origin:"*"});
 
-// setup peerserver
-// const peerServer = ExpressPeerServer(server, {
-//     debug: true,
-//     path: '/meetup'
-//   });
-// app.use('/peerjs', peerServer);
-
 // middlewares
 app.use(cors({
     origin:["http://localhost:3000"],
@@ -29,8 +22,7 @@ app.use(cors({
 app.use(express.json({}));
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParse());
-
-
+// app.use(express.static(__dirname+"/client/build"))
 app.use((req,res,next)=>{
     req.io=io;
     next();
