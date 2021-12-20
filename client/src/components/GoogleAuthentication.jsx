@@ -57,10 +57,10 @@ function GoogleAuthentication(props) {
     return (
         <>
         {
-            loading?
+            !googleAuthSecret?
             <Spinner animation='border' variant="primary"/>
             :
-        <GoogleLogin
+            <GoogleLogin
             clientId={googleAuthSecret}
             render={renderProps => (
             <Button onClick={renderProps.onClick} disabled={renderProps.disabled} variant={styleColor} style={style}>{btnText}</Button>
@@ -69,7 +69,7 @@ function GoogleAuthentication(props) {
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
             cookiePolicy={'single_host_origin'}
-        />
+            />
         }
         </>
     )
