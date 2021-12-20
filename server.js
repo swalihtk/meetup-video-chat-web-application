@@ -12,7 +12,7 @@ require("dotenv").config();
 const app=express();
 const PORT= process.env.PORT;
 const server=http.createServer(app);
-const io=socketio(server, {cors:{origin:"*"}});
+const io=socketio(server);
 
 // setup peerserver
 // const peerServer = ExpressPeerServer(server, {
