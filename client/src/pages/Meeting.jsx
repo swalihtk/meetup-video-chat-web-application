@@ -86,6 +86,7 @@ function Meeting() {
                     callToUser(userId, myStream);
                 }) 
             }catch(e){
+                console.log("Error: ", e);
                 swal("Please on camera to access video call", "ok", "error");
             }
                 
