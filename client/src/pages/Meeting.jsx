@@ -72,7 +72,7 @@ function Meeting() {
         
             try{
                 setCamLoading(true);
-                let myStream=await window.navigator.mediaDevices.getUserMedia({audio:true, video:true});
+                let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
                 appendOwnVideoToDiv(myVideo, myStream);
                 setMyVideoStream(myStream);
                 setVideoOn(true);
