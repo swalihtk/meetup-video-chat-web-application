@@ -12,8 +12,10 @@
 
 ## Not yet diployed -------
 
-## reference
+## dependency
 - https://www.npmjs.com/package/react-google-login
 - https://peerjs.com/
 - https://www.npmjs.com/package/socket.io-client
 - https://socket.io/
+- https://www.npmjs.com/package/express
+- https://www.npmjs.com/package/jsonwebtoken
