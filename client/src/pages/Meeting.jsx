@@ -48,7 +48,7 @@ function Meeting() {
 
     // peer and socketio setup 
     let peer=new Peer();
-    let socketIo=socketIoClient("https://meetup.swaliht.tech/api");
+    let socketIo=socketIoClient("http://localhost:4000");
   
     useEffect(async()=>{
         if(!logedin) return;
@@ -56,7 +56,6 @@ function Meeting() {
             setMyPeerId(id);
             // adding id to div for remove when user disconnected
             socketIo.emit("create-room", id, roomId);
-            console.log("Peer on---------")
         })
     }, [logedin])
 
