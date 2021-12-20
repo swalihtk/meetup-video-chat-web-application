@@ -4,6 +4,7 @@ const socketio=require("socket.io");
 const http=require("http");
 const mongoose=require("mongoose");
 const cookieParse=require("cookie-parser");
+const {ExpressPeerServer} =require("peer");
 
 require("dotenv").config();
 
@@ -12,6 +13,13 @@ const app=express();
 const PORT= process.env.PORT;
 const server=http.createServer(app);
 const io=socketio(server, {cors:{origin:"*"}});
+
+// setup peerserver
+// const peerServer = ExpressPeerServer(server, {
+//     debug: true,
+//     path: '/meetup'
+//   });
+// app.use('/peerjs', peerServer);
 
 // middlewares
 app.use(cors({
@@ -41,8 +49,8 @@ mongoose.connect(process.env.MONGO_URL, (err)=>{
 // Socket io connection
 io.on("connection", (socket)=>{
     socket.on("create-room", (peerId, roomId)=>{
+        console.log(peerId);
         socket.join(roomId);
-
         socket.broadcast.to(roomId).emit("join-user", peerId);
 
     })
