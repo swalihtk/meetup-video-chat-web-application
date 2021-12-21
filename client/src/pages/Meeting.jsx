@@ -49,7 +49,7 @@ function Meeting() {
 
     // peer and socketio setup 
     // let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
-    let socketIo=socketIoClient("http://localhost:4000", {
+    let socketIo=socketIoClient("/socket", {
         path:"/websockets",
         transports:['websocket'],
     });
@@ -61,10 +61,9 @@ function Meeting() {
             setMyPeerId(id);
             // adding id to div for remove when user disconnected
             socketIo.emit("create-room", id, roomId);
-
             console.log("Peer Id Send");
         })
-    }, [logedin])
+    }, [])
 
     // setup camera permission
     navigator.permissions.query({name: "camera"}).then(response=>{
@@ -101,7 +100,7 @@ function Meeting() {
                 swal("Please on camera to access video call", "ok", "error");
             }
                 
-    }, [logedin, permissionStatus])
+    }, [permissionStatus])
     
     useEffect(()=>{
         return ()=>{

@@ -4,16 +4,19 @@ const socketio=require("socket.io");
 const http=require("http");
 const mongoose=require("mongoose");
 const cookieParse=require("cookie-parser");
-const path = require("path");
-var ExpressPeerServer = require('peer').ExpressPeerServer;
-
 require("dotenv").config();
 
 // app
 const app=express();
 const PORT= process.env.PORT;
-const server=http.createServer(app);
-const io=socketio(server, {
+
+// socketio setup
+const server_socket=http.createServer((req,res)=>{
+    res.end("http listening for socket");
+});
+server_socket.listen(4001);
+  
+const io=socketio(server_socket, {
     path: '/websockets', // path to make requests to [http://host/websockets]
     pingInterval: 60 * 1000, // 1 minute
     pingTimeout: 4 * 60 * 1000, // 4 minutes
@@ -32,11 +35,6 @@ app.use((req,res,next)=>{
     next();
 })
 
-// peerjs setup
-// let expressPeerServer=ExpressPeerServer(server, {
-//     debug:true
-// })
-// app.use("/peerjs", expressPeerServer);
 
 // mongoose connection
 mongoose.connect(process.env.MONGO_URL, (err)=>{
@@ -80,6 +78,6 @@ const cookieParser = require("cookie-parser");
 app.use("/auth", authRoute);
 
 // listen
-server.listen(PORT, ()=>{
+app.listen(PORT, ()=>{
     console.log("Server started on "+PORT);
 })
