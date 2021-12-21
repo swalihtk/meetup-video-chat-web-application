@@ -16,9 +16,7 @@ const server_socket=http.createServer((req,res)=>{
 });
 server_socket.listen(4001);
   
-const io=socketio(server_socket, {
-    path: '/websockets', // path to make requests to [http://host/websockets]
-});
+const io=socketio(server_socket);
 
 // middlewares
 app.use(cors({

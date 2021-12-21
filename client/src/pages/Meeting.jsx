@@ -49,10 +49,7 @@ function Meeting() {
 
     // peer and socketio setup 
     // let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
-    let socketIo=socketIoClient("/socket", {
-        path:"/websockets",
-        transports:['websocket'],
-    });
+    let socketIo=socketIoClient("/socket", {transports:['websocket']});
     let peer=new Peer();
   
     useEffect(async()=>{
