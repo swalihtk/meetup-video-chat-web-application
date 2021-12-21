@@ -18,8 +18,6 @@ server_socket.listen(4001);
   
 const io=socketio(server_socket, {
     path: '/websockets', // path to make requests to [http://host/websockets]
-    pingInterval: 60 * 1000, // 1 minute
-    pingTimeout: 4 * 60 * 1000, // 4 minutes
 });
 
 // middlewares
