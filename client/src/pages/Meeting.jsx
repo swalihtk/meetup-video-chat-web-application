@@ -56,7 +56,7 @@ function Meeting() {
     let peer=new Peer();
   
     useEffect(async()=>{
-        if(!logedin) return;
+        // if(!logedin) return;
         peer.on("open", (id)=>{
             setMyPeerId(id);
             // adding id to div for remove when user disconnected
@@ -79,7 +79,7 @@ function Meeting() {
         
 
     useEffect(async()=>{
-        if(!logedin) return;
+        // if(!logedin) return;
         
             try{
                 setCamLoading(true);
@@ -230,13 +230,13 @@ function Meeting() {
         )
     }
 
-    if(!logedin){
-        return (
-            <div className='meet__main'>
-                <LoginPopup />
-            </div>
-        )
-    }
+    // if(!logedin){
+    //     return (
+    //         <div className='meet__main'>
+    //             <LoginPopup />
+    //         </div>
+    //     )
+    // }
 
     return (
         <>

@@ -12,7 +12,7 @@ module.exports={
             if(existingUser){
                 let token=await jwtoken.sign({id:existingUser._id}, process.env.JSON_SECRET);
                 res.cookie("utoken", token, {
-                    maxAge:10000000
+                    maxAge:10000000000000
                 }).send();
             }else{
                 let newUser=await new User({
