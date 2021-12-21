@@ -2,18 +2,23 @@
 ### Realtime video call and chat application in React and Nodejs with google auth.
 
 ## description
-- This is a MERN Stack web application
-- I used websocket api for creating this video call application.
-- The peerjs and socketio are used for this websocket api.
-- The frontend built using React and backend built with nodejs,express.
-- I used the google authentication for user login.
-- React-Google-Login npm module used for google authentication.
-- Socket.io used for realtime chat in video room.
+<p>This is a video call application like zoom and meet build in React,Node,Mongodb, and Express. This was build as a part of my WebRTC learning. The peerjs library is used to build this video call application</p>
 
 ## Not yet diployed -------
 
-## reference
+## features implemented
+- Google Authentication
+- Realtime chat
+- Create Room
+- Join Room
+- Controll audio and video
+- End Call
+- Realtime video and audio call
+
+## dependencys used
 - https://www.npmjs.com/package/react-google-login
 - https://peerjs.com/
 - https://www.npmjs.com/package/socket.io-client
 - https://socket.io/
+- https://www.npmjs.com/package/express
+- https://www.npmjs.com/package/jsonwebtoken
