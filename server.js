@@ -5,7 +5,6 @@ const http=require("http");
 const mongoose=require("mongoose");
 const cookieParse=require("cookie-parser");
 const path = require("path");
-var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 require("dotenv").config();
 
@@ -13,11 +12,7 @@ require("dotenv").config();
 const app=express();
 const PORT= process.env.PORT;
 const server=http.createServer(app);
-const io=socketio(server, {
-    path: '/websockets', // path to make requests to [http://host/websockets]
-    pingInterval: 60 * 1000, // 1 minute
-    pingTimeout: 4 * 60 * 1000, // 4 minutes
-});
+const io=socketio(server);
 
 // middlewares
 app.use(cors({
@@ -27,16 +22,11 @@ app.use(cors({
 app.use(express.json({}));
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParse());
+// app.use(express.static(__dirname+"/client/build"))
 app.use((req,res,next)=>{
     req.io=io;
     next();
 })
-
-// peerjs setup
-// let expressPeerServer=ExpressPeerServer(server, {
-//     debug:true
-// })
-// app.use("/peerjs", expressPeerServer);
 
 // mongoose connection
 mongoose.connect(process.env.MONGO_URL, (err)=>{
