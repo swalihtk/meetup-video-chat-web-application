@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, useCallback} from 'react'
 import "../styles/Meeting.css";
 import {Container, Spinner} from "react-bootstrap";
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
@@ -41,16 +41,19 @@ function Meeting() {
 
     // video call permission
     let [permissionStatus, setPermissionStatus]=useState(undefined);
-      
+    let [permissionState, setPermissionState]=useState(undefined);
 
     // roomId
     let {id:roomId}=useParams();
     
 
     // peer and socketio setup 
+    // let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
+    let socketIo=socketIoClient("http://localhost:4000", {
+        path:"/websockets",
+        transports:['websocket'],
+    });
     let peer=new Peer();
-    let socketIo=socketIoClient("/api", { transports : ['websocket'] });
-    // let socketIo=socketIoClient();
   
     useEffect(async()=>{
         if(!logedin) return;
@@ -66,9 +69,13 @@ function Meeting() {
     // setup camera permission
     navigator.permissions.query({name: "camera"}).then(response=>{
             response.addEventListener("change", ()=>{
-                setPermissionStatus(response.state)
+                setPermissionState(response.state)
             })
     })
+
+    useCallback(()=>{
+        setPermissionStatus(permissionState);
+    }, [permissionState])
         
 
     useEffect(async()=>{
