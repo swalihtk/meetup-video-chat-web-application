@@ -10,6 +10,10 @@ import checkUserLogedIn from "../actions/checkLogin";
 import roomAction from "../actions/roomAction";
 import { useNavigate } from 'react-router';
 
+
+// socketio test
+import socketio from 'socket.io-client';
+
 function Home() {
 
     // checking user logedin or not

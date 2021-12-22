@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Provider} from 'react-redux'
 import store from "./redux/store";
 
-axios.defaults.baseURL="/api";
+axios.defaults.baseURL="http://3.137.142.38/api/";
 axios.defaults.withCredentials=true;
 
 function App() {

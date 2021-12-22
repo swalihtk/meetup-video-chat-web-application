@@ -48,8 +48,7 @@ function Meeting() {
     
 
     // peer and socketio setup 
-    // let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
-    let socketIo=socketIoClient("/socket", {transports:['websocket']});
+    let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
     let peer=new Peer();
   
     useEffect(async()=>{
@@ -72,11 +71,18 @@ function Meeting() {
     useCallback(()=>{
         setPermissionStatus(permissionState);
     }, [permissionState])
-        
-
+    
+    let [hasGrid,setHasGrid]=useState(false);
+    let [cameraOn, setCameraOn]=useState(false);
+    useEffect(()=>{
+       if(!videoGrid.current) return;
+       setHasGrid(true);
+    }, [videoGrid])
+    console.log(videoGrid.current);
     useEffect(async()=>{
         // if(!logedin) return;
         
+        if(!videoGrid.current) return;
             try{
                 setCamLoading(true);
                 let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
@@ -94,17 +100,11 @@ function Meeting() {
                     console.log("User Join");
                 }) 
             }catch(e){
-                swal("Please on camera to access video call", "ok", "error");
+                console.log(e);
             }
                 
-    }, [permissionStatus])
+    }, [videoGrid,permissionStatus])
     
-    useEffect(()=>{
-        return ()=>{
-            myVideoStream.getVideoTracks()[0].stop();
-            myVideoStream.getAudioTracks()[0].stop();
-        }
-    }, [])
 
     // remove uservideo when disconnected
     useEffect(()=>{
@@ -154,6 +154,7 @@ function Meeting() {
 
     // function for video appending (own video)
     function appendOwnVideoToDiv(video, stream){
+        console.log(videoGrid.current);
         // video element setup
         video.srcObject=stream;
         video.addEventListener("loadedmetadata", ()=>video.play());
@@ -162,9 +163,11 @@ function Meeting() {
         myDiv.setAttribute("class", "video");
         myDiv.setAttribute("id", "myVideo")
         myDiv.appendChild(video);
-
         // div appending to parent
+        if(!videoGrid.current) return;
         videoGrid.current.appendChild(myDiv);
+
+        // document.getElementById("video__grid").appendChild(myDiv);
     }
 
     // function for video appending (roomates video)
@@ -184,6 +187,9 @@ function Meeting() {
 
     // handle video mute and audio mute
     function handleVideoMute(){
+
+        if(!myVideoStream) return;
+
         if(myVideoStream.getVideoTracks()[0].enabled){
             myVideoStream.getVideoTracks()[0].enabled=false;
             setVideoOn(false);
@@ -240,7 +246,7 @@ function Meeting() {
         <div className="meet__main">
             <Container>
                 <div className="row">
-                    <div className="col-12 meet__video" ref={videoGrid}>
+                    <div className="col-12 meet__video" ref={videoGrid} id="video__grid">
                         {/* Videos appends here */}
                         {
                             camLoading&&(
