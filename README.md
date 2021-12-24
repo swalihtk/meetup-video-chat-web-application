@@ -4,7 +4,7 @@
 ## description
 <p>This is a video call application like zoom and meet build in React,Node,Mongodb, and Express. This was build as a part of my WebRTC learning. The peerjs library is used to build this video call application</p>
 
-## Not yet diployed -------
+## www.meetup.swaliht.tech
 
 ## features implemented
 - Google Authentication
