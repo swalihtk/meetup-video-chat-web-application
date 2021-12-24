@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react'
+import React, {useEffect, useState, useRef, useCallback, useMemo} from 'react'
 import "../styles/Meeting.css";
 import {Container, Spinner} from "react-bootstrap";
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
@@ -37,7 +37,6 @@ function Meeting() {
     let [callState, setCallState]=useState(undefined);
     let [myPeerId, setMyPeerId]=useState("");
     let myVideo=document.createElement("video");
-    let myDiv=document.createElement("div");
 
     // video call permission
     let [permissionStatus, setPermissionStatus]=useState(undefined);
@@ -48,7 +47,7 @@ function Meeting() {
     
 
     // peer and socketio setup 
-    let socketIo=socketIoClient("http://localhost:4000/websockets", { transports : ['websocket'] });
+    let socketIo=socketIoClient("http://v1.meetup.swaliht.tech/", { transports : ['websocket'] });
     let peer=new Peer();
   
     useEffect(async()=>{
@@ -57,7 +56,6 @@ function Meeting() {
             setMyPeerId(id);
             // adding id to div for remove when user disconnected
             socketIo.emit("create-room", id, roomId);
-            console.log("Peer Id Send");
         })
     }, [])
 
@@ -71,26 +69,17 @@ function Meeting() {
     useCallback(()=>{
         setPermissionStatus(permissionState);
     }, [permissionState])
-    
-    let [hasGrid,setHasGrid]=useState(false);
-    let [cameraOn, setCameraOn]=useState(false);
-    useEffect(()=>{
-       if(!videoGrid.current) return;
-       setHasGrid(true);
-    }, [videoGrid])
-    console.log(videoGrid.current);
+
+   
+   
     useEffect(async()=>{
         // if(!logedin) return;
         
-        if(!videoGrid.current) return;
             try{
                 setCamLoading(true);
                 let myStream=await window.navigator.mediaDevices.getUserMedia({audio:false, video:true});
-                appendOwnVideoToDiv(myVideo, myStream);
                 setMyVideoStream(myStream);
                 setVideoOn(true);
-                setCamLoading(false);
-
                 // answering to call
                 answerToCall(myStream);
                 
@@ -99,11 +88,25 @@ function Meeting() {
                     callToUser(userId, myStream);
                     console.log("User Join");
                 }) 
-            }catch(e){
-                console.log(e);
-            }
                 
-    }, [videoGrid,permissionStatus])
+            }catch(e){
+                return;
+            }
+    
+    }, [permissionStatus])
+
+    // check videogrid null or not
+    let haveGrid=useCallback(()=>{
+        if(!videoGrid.current) return;
+        appendOwnVideoToDiv(myVideo, myVideoStream);
+        setCamLoading(false);
+    }, [videoGrid.current])
+
+    useEffect(()=>{
+        if(!myVideoStream) return;
+        console.log(myVideoStream);
+        haveGrid();
+    }, [myVideoStream, haveGrid])
     
 
     // remove uservideo when disconnected
@@ -154,7 +157,8 @@ function Meeting() {
 
     // function for video appending (own video)
     function appendOwnVideoToDiv(video, stream){
-        console.log(videoGrid.current);
+        let myDiv=document.createElement("div");
+
         // video element setup
         video.srcObject=stream;
         video.addEventListener("loadedmetadata", ()=>video.play());
@@ -164,10 +168,9 @@ function Meeting() {
         myDiv.setAttribute("id", "myVideo")
         myDiv.appendChild(video);
         // div appending to parent
+
         if(!videoGrid.current) return;
         videoGrid.current.appendChild(myDiv);
-
-        // document.getElementById("video__grid").appendChild(myDiv);
     }
 
     // function for video appending (roomates video)
@@ -245,13 +248,14 @@ function Meeting() {
         <RoomChat showChatForm={showChatForm} setShowChatForm={setShowChatForm} socketio={socketIo} username={userInfo.firstName} roomId={roomId}/>
         <div className="meet__main">
             <Container>
-                <div className="row">
+                <div className="row" id="demo">
                     <div className="col-12 meet__video" ref={videoGrid} id="video__grid">
                         {/* Videos appends here */}
                         {
                             camLoading&&(
-                                <div>
+                                <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap:"8px"}}>
                                     <Spinner animation='border' variant='danger' />
+                                    <p style={{color:"white"}}>Camera Loading..</p>
                                 </div>
                             )
                         }
