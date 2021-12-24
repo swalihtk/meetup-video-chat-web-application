@@ -47,7 +47,7 @@ function Meeting() {
     
 
     // peer and socketio setup 
-    let socketIo=socketIoClient("http://v1.meetup.swaliht.tech/", { transports : ['websocket'] });
+    let socketIo=socketIoClient("https://v1.meetup.swaliht.tech/", { transports : ['websocket'] });
     let peer=new Peer();
   
     useEffect(async()=>{

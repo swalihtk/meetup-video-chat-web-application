@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Provider} from 'react-redux'
 import store from "./redux/store";
 
-axios.defaults.baseURL="http://v1.meetup.swaliht.tech/api/";
+axios.defaults.baseURL="https://v1.meetup.swaliht.tech/api/";
 axios.defaults.withCredentials=true;
 
 function App() {
